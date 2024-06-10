@@ -1,41 +1,16 @@
-name: Deploy Laravel to SFTP
-
-on:
-  push:
-    branches:
-      - main  # Adjust branch to trigger workflow (if needed)
-
+on: push
+name: 🚀 Deploy website on push
 jobs:
-  deploy:
-    runs-on: ubuntu-latest  # Replace with desired runner OS
-
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3  # Checks out your code
-
-      - name: Set up PHP (adjust based on your Laravel version)
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 'your_php_version'
-          extensions: mbstring, exif, pcntl  # Adjust extensions based on your Laravel requirements
-
-      - name: Install Composer dependencies
-        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader --no-dev
-
-      - name: Generate Laravel Application Key (if needed)
-        run: php artisan key:generate  # Uncomment if your application doesn't have a key
-
-      - name: Clear Laravel Cache (optional)
-        run: php artisan cache:clear  # Uncomment to clear cache before deployment
-
-      - name: Clear Laravel Config Cache (optional)
-        run: php artisan config:cache  # Uncomment to clear config cache before deployment
-
-      - name: Deploy to SFTP (securely using GitHub Secrets)
-        uses: gr2m/github-actions-sftp-deploy@v1.4.0
-        with:
-          host: ${{ secrets.SFTP_HOST }}  # Use hostname for SFTP (might be same as FTP)
-          username: ${{ secrets.SFTP_USERNAME }}  # Reference username from GitHub Secrets
-          password: ${{ secrets.SFTP_PASSWORD }}  # Reference password from GitHub Secrets
-          local-dir: public  # Assuming your Laravel public directory contains deployable files
-          remote-dir: /public_html  # Replace with desired directory on the server (adjust for SFTP)
-          log-level: verbose  # Adjust logging level as needed
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v4
+    
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{secrets.FTP_HOST}}
+        username: ${{secrets.FTP_USERNAME}}
+        password: ${{ secrets.FTP_PASSWORD }}
