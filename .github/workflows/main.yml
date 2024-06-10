@@ -1,16 +1,24 @@
-on: push
-name: 🚀 Deploy website on push
+on:
+  push:
+    branches: [ main ]  # Only trigger on push to the main branch
+
 jobs:
   web-deploy:
-    name: 🎉 Deploy
+    name:  Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: 🚚 Get latest code
-      uses: actions/checkout@v4
-    
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: ${{secrets.FTP_HOST}}
-        username: ${{secrets.FTP_USERNAME}}
-        password: ${{ secrets.FTP_PASSWORD }}
+      - name:  Get latest code
+        uses: actions/checkout@v4
+
+      - name: ️ Build website (if applicable)
+        # Add your build commands here (replace with your specific build process)
+        # Example: npm install && npm run build
+
+      - name:  Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local_directory: ./dist  # Replace with your build output directory (if applicable)
+          remote_directory: /path/to/application  # Destination directory on server
